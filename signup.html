@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Course Selector</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -268,7 +268,7 @@
     <div class="selected-course-list">
       <h3>Selected Courses (in order):</h3>
       <div id="selectedCourses"></div>
-      <button id="export-btn">Export to PDF</button>
+      <button id="export-btn">Export to Excel</button>
     </div>
 
     <script>
@@ -331,16 +331,18 @@
         updateSelectedCourses();
       });
 
-      // Export to PDF
+      // Export to Excel
       document.getElementById("export-btn").addEventListener("click", () => {
-        const jsPDF = window.jspdf.jsPDF;
-        const doc = new jsPDF();
-        doc.setFontSize(16);
-        doc.text("Selected Courses (in order):", 10, 20);
-        selectedCourses.forEach((course, i) => {
-          doc.text(`${i + 1}. ${course}`, 10, 30 + i * 10);
-        });
-        doc.save("selected_courses.pdf");
+        const worksheetData = selectedCourses.map((course, index) => ({
+          Order: index + 1,
+          Course: course,
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Selected Courses");
+
+        XLSX.writeFile(workbook, "selected_courses.xlsx");
       });
 
       updateSelectedCourses();
