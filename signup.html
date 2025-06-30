@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Course Selector</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .department {
+        margin-bottom: 20px;
+      }
+      .course-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .course {
+        padding: 10px 15px;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.3s ease, border 0.3s ease;
+      }
+      .course.selected {
+        background-color: #e0f0ff;
+        border-color: #2196f3;
+        font-weight: bold;
+      }
+      .course::before {
+        content: attr(data-order);
+        font-weight: bold;
+        margin-right: 8px;
+        display: inline-block;
+        width: 20px;
+      }
+      .selected-course-list {
+        margin-top: 30px;
+      }
+      .selected-course-item {
+        padding: 8px 12px;
+        background: #f8f8f8;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        cursor: move;
+      }
+      .selected-course-item span {
+        font-weight: bold;
+        margin-right: 6px;
+      }
+      #export-btn {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background: #2196f3;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Click Courses to Select (Tracks Sequence)</h2>
+
+    <div id="courses">
+      <div class="department">
+        <h3>Chemistry</h3>
+        <div class="course-list">
+          <div class="course" data-id="CHI-501">CHI-501: Green Chemistry</div>
+          <div class="course" data-id="CY-517">
+            CY-517: Lasers in Chemistry and Biology
+          </div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Architecture, Planning and Design</h3>
+        <div class="course-list">
+          <div class="course" data-id="AR-411">
+            AR-411: Green Buildings Techniques
+          </div>
+          <div class="course" data-id="AR-318">
+            AR-318: Vernacular Architecture
+          </div>
+          <div class="course" data-id="AR-316">AR-316: Art in Architecture</div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Mathematical Sciences</h3>
+        <div class="course-list">
+          <div class="course" data-id="CSM-322">
+            CSM-322: Information and Coding Theory
+          </div>
+          <div class="course" data-id="CSM-421">
+            CSM-421: Numerical Solutions of PDEs
+          </div>
+          <div class="course" data-id="MA-411">
+            MA-411: Topology and Functional Analysis
+          </div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Physics</h3>
+        <div class="course-list">
+          <div class="course" data-id="EO-237">EO-237: Fiber Optics</div>
+          <div class="course" data-id="PHY-411">
+            PHY-411: Magnetohydrodynamics
+          </div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Biochemical Engineering</h3>
+        <div class="course-list">
+          <div class="course" data-id="BC-201">
+            BC-201: Advances in Biochemistry (OE)
+          </div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Biomedical Engineering</h3>
+        <div class="course-list">
+          <div class="course" data-id="BM-201">
+            BM-201: Molecular Biology and Genetics
+          </div>
+          <div class="course" data-id="BM-501">
+            BM-501: BioMEMS and Biosensors
+          </div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Ceramic Engineering</h3>
+        <div class="course-list">
+          <div class="course" data-id="MCR-202">
+            MCR-202: Thermodynamics in Ceramic Systems
+          </div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Chemical Engineering and Technology</h3>
+        <div class="course-list">
+          <div class="course" data-id="CHE-573">
+            CHE-573: Standardization and Quality Ecosystem
+          </div>
+          <div class="course" data-id="CHE-231">
+            CHE-231: Energy Resources and Utilization
+          </div>
+          <div class="course" data-id="CHE-241">
+            CHE-241: Industrial Pollution and Control
+          </div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Civil Engineering</h3>
+        <div class="course-list">
+          <div class="course" data-id="CE-414">
+            CE-414: Design of Hydraulic Structure
+          </div>
+          <div class="course" data-id="CE-461">CE-461: Geoinformatics</div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Computer Science and Engineering</h3>
+        <div class="course-list">
+          <div class="course" data-id="AI-111">
+            AI-111: Powers of Artificial Intelligence
+          </div>
+          <div class="course" data-id="AI-112">AI-112: AI for Programmers</div>
+          <div class="course" data-id="CSE-530">
+            CSE-530: Information Security
+          </div>
+          <div class="course" data-id="CSE-332">
+            CSE-332: Ubiquitous Computing
+          </div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Electronics Engineering</h3>
+        <div class="course-list">
+          <div class="course" data-id="EC-422">
+            EC-422: Artificial Intelligence
+          </div>
+          <div class="course" data-id="EC-314">
+            EC-314: Optical Communication Networks
+          </div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Electrical Engineering</h3>
+        <div class="course-list">
+          <div class="course" data-id="EE-404">EE-404: Operations Research</div>
+          <div class="course" data-id="EE-429">
+            EE-429: Fundamentals of Electrical Drives
+          </div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Humanistic Studies</h3>
+        <div class="course-list">
+          <div class="course" data-id="LLG-309">
+            LLG-309: Academic Writing for Science and Tech
+          </div>
+          <div class="course" data-id="HPH-305">
+            HPH-305: Everyday Aesthetics
+          </div>
+          <div class="course" data-id="HSL-301">
+            HSL-301: Political and Social Change in India
+          </div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Mechanical Engineering</h3>
+        <div class="course-list">
+          <div class="course" data-id="ME-332">
+            ME-332: Thermal Management of Electronic System
+          </div>
+          <div class="course" data-id="ME-325">
+            ME-325: Smart Materials and Structures
+          </div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Metallurgical Engineering</h3>
+        <div class="course-list">
+          <div class="course" data-id="MT-201">
+            MT-201: Structure of Materials
+          </div>
+          <div class="course" data-id="MT-202">
+            MT-202: Extractive Metallurgy
+          </div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Mining Engineering</h3>
+        <div class="course-list">
+          <div class="course" data-id="MN-481">MN-481: Mineral Processing</div>
+          <div class="course" data-id="MN-431">
+            MN-431: Numerical methods in Geomechanics
+          </div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Pharmaceutical Engineering & Technology</h3>
+        <div class="course-list">
+          <div class="course" data-id="PH-441">
+            PH-441: Natural Products and Phytotherapy
+          </div>
+          <div class="course" data-id="PH-411">PH-411: Biopharmaceutics</div>
+        </div>
+      </div>
+      <div class="department">
+        <h3>Materials Science and Technology</h3>
+        <div class="course-list">
+          <div class="course" data-id="MS-221">
+            MS-221: Crystallography & Crystal Structures
+          </div>
+          <div class="course" data-id="MS-201">
+            MS-201: Phase Diagrams and Transformations
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selected Courses -->
+    <div class="selected-course-list">
+      <h3>Selected Courses (in order):</h3>
+      <div id="selectedCourses"></div>
+      <button id="export-btn">Export to PDF</button>
+    </div>
+
+    <script>
+      const selectedCourses = [];
+      const selectedCoursesDiv = document.getElementById("selectedCourses");
+
+      function updateSelectedCourses() {
+        selectedCoursesDiv.innerHTML = "";
+        selectedCourses.forEach((course, index) => {
+          const div = document.createElement("div");
+          div.className = "selected-course-item";
+          div.draggable = true;
+          div.dataset.index = index;
+          div.innerHTML = `<span>${index + 1}.</span> ${course}`;
+          selectedCoursesDiv.appendChild(div);
+        });
+
+        document.querySelectorAll(".course").forEach((el) => {
+          const courseText = el.textContent;
+          const order = selectedCourses.indexOf(courseText);
+          if (order > -1) {
+            el.classList.add("selected");
+            el.dataset.order = `${order + 1}.`;
+          } else {
+            el.classList.remove("selected");
+            el.dataset.order = "";
+          }
+        });
+      }
+
+      document.querySelectorAll(".course").forEach((el) => {
+        el.addEventListener("click", () => {
+          const course = el.textContent;
+          const index = selectedCourses.indexOf(course);
+          if (index === -1) {
+            selectedCourses.push(course);
+          } else {
+            selectedCourses.splice(index, 1);
+          }
+          updateSelectedCourses();
+        });
+      });
+
+      // Drag and Drop Support
+      let dragged;
+      selectedCoursesDiv.addEventListener("dragstart", (e) => {
+        dragged = +e.target.dataset.index;
+      });
+
+      selectedCoursesDiv.addEventListener("dragover", (e) => {
+        e.preventDefault();
+      });
+
+      selectedCoursesDiv.addEventListener("drop", (e) => {
+        e.preventDefault();
+        const droppedIndex = +e.target.closest(".selected-course-item").dataset
+          .index;
+        const movedItem = selectedCourses.splice(dragged, 1)[0];
+        selectedCourses.splice(droppedIndex, 0, movedItem);
+        updateSelectedCourses();
+      });
+
+      // Export to PDF
+      document.getElementById("export-btn").addEventListener("click", () => {
+        const jsPDF = window.jspdf.jsPDF;
+        const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text("Selected Courses (in order):", 10, 20);
+        selectedCourses.forEach((course, i) => {
+          doc.text(`${i + 1}. ${course}`, 10, 30 + i * 10);
+        });
+        doc.save("selected_courses.pdf");
+      });
+
+      updateSelectedCourses();
+    </script>
+  </body>
+</html>
